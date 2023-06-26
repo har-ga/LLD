@@ -7,8 +7,7 @@ class Vehicle{
     private:
         static string LicenseNo;
     public:
-        Vehicle();
-        Vehicle(string LicenseNo){
+        Vehicle(string LicenseNo = "XYZ 0000"){
             this->LicenseNo = LicenseNo;
         }
         virtual void assignTicket(ParkingTicket ticket) = 0;
@@ -74,29 +73,58 @@ class ParkingSpot{
     private:
         int id;
         bool isFree = 1;
+        int number;
         //type parkingSpotType; ??????? what is type???????
         Vehicle* vehicle;
 
     public:
-        ParkingSpot(int id, Vehicle* vehicle){
+        ParkingSpot(int id, Vehicle* vehicle, int number){
             this->id = id;
             this->isFree = 0;
             this->vehicle = vehicle;
+            this->number = number;
         }
+        Vehicle* getParkedVehicle(){
+            return vehicle;
+        }
+
 
         bool getIsFree(){
             return isFree;
         }
-        virtual bool assignVehicle(Vehicle* vehicle) = 0;
-        bool removeVehicle(){
+        virtual bool assignVehicle(Vehicle* vehicle){
+            this->vehicle = vehicle;
+        };
+        void removeVehicle(){
+            vehicle = NULL;
+            this->isFree = true;
+        }
+        int getSpotNumber(){
+            return number;
+        }
+        void setSpotNumber(int number){
+            this->number = number;
+        }
 
+        bool isEmpty(){
+            return isFree;
+        }
+        void setEmpty(bool empty){
+            this->isFree = empty;
+        }
+        void setId(int id){
+            this->id = id;
+        }
+
+        int getId(){
+            return this->id;
         }
 };
 
 
 class LargeSpot : public ParkingSpot{
     public:
-        LargeSpot(int id, Vehicle* vehicle) : ParkingSpot(id, vehicle){};
+        LargeSpot(int id, Vehicle* vehicle, int number) : ParkingSpot(id, vehicle, number){};
         bool assignVehicle(Vehicle* vehicle) override {
 
         }
@@ -219,17 +247,21 @@ class ParkingTicket{
         Vehicle* vehicle;
         Exit exitIns;
     public:
-        ParkingTicket();
-        ParkingTicket(int no) {  
+        
+        ParkingTicket(int no = 1, Entrance entrance) {  
             this->ticketNo = no;
-            this->entry = system_clock::now();            
+            this->entry = system_clock::now();     
+            status = 0;
+            this->entrance = entrance;
         }
-        void setTicketNo(int no){
-            ticketNo = no;
-        }
+        
         int getTicketNo(){
             return ticketNo;
         }
+        // double getAmount(){
+        //     std::chrono::duration<int64_t,std::nano> parkedTime = system_clock::now() - entry;
+        //     cout<<parkedTime.count();
+        // }
 };
 
 
@@ -275,7 +307,7 @@ class ParkingRate{
             this->rate = rate;
         }
         void calculate(){
-            
+            cout<<hours*rate<<endl;
         }
 };
 
